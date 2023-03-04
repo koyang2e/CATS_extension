@@ -1,0 +1,19 @@
+{
+  "name": "CATS",
+  "version": "1.0",
+  "description" : "Catalogue Augmentation Tool, Spike. Adjust KLAS library online catalogue print function.",
+  "host_permissions" : ["https://library.busan.go.kr/ggbooks/*"],
+  "icons": {
+  "16" : "images/cat_16.png",
+  "32" : "images/cat_32.png",
+  "64" : "images/cat_64.png",
+  "128" : "images/cat_128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://library.busan.go.kr/ggbooks/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "manifest_version" : 3
+}
