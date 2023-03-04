@@ -14,7 +14,8 @@ function modifyPrintButtons() {
 
 function extractBookInfoFromHref(href) {
   const args = href.substring(href.indexOf('(') + 2, href.lastIndexOf(')') - 1).split('^|');
-  // href gives coded URI. URI를 다시 한글로 바꾸기 위한 것
+// href gives coded URI. URI를 다시 한글로 바꾸기 위한 것
+// 아 근데 a 태그의 href attribute 값을 그냥 들고오면 되는거라 안써도 됨.
   /*
   const title = decodeURIComponent(args[0]);
   const callnumber = decodeURIComponent(args[1]);
@@ -32,72 +33,97 @@ function extractBookInfoFromHref(href) {
 
 function generatePrintPage(bookInfo) {
   const { title, callnumber, bookId, authors, location } = bookInfo;
+  // 도서 정보를 받아서, 해당 정보를 html 파일에 채워서 반환함
   return `
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>[자료위치안내]</title>
-    <style>
-    * {word-break: keep-all;}
-      body {
-        font-family: 'Nanum Gothic', sans-serif;
-        font-size: 24px;
-        line-height: 1.5;
-      }
-      .section:first-of-type{
-      border-top: 2px grey solid;
-      }
-      .section {
-        
-        padding-top: 10px;
-        padding-bottom: 10px;
-        border-bottom: 2px grey solid;
-        
-      }
-      h1 {
-        font-size: 36px;
-        font-weight: bold;
-        
-        
-      }
-      .label {
-        font-weight: bold;
-        margin-right: 20px;
-        width: 15%;
-        display: inline-block;
-        text-align: justify;
-     	  text-align-last: justify;
-	      letter-spacing: -0.1em;
-        
-      }
-      .value {
-        font-weight: 800;
-        display: inline-block;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>[자료위치안내]</h1>
-    <div class="section">
-      <span class="label">서 명:</span>
-      <span class="value">${title}</span>
-    </div>
-    <div class="section">
-      <span class="label">저 자:</span>
-      <span class="value">${authors}</span>
-    </div>
-    <div class="section">
-      <span class="label">청 구 기 호:</span>
-      <span class="value">${callnumber}</span>
-    </div>
-    <div class="section">
-      <span class="label">위 치:</span>
-      <span class="value">${location}</span>
-    </div>
-    <div class="section">
-      <span class="label">등 록 번 호:</span>
-      <span class="value">${bookId}</span>
-    </div>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>[자료위치안내]</title>
+  <style>
+    * {
+      word-break:break-all;
+    }
+    h1{
+        font-size: 1.4em;
+        margin-left: 10px;
+    }
+    body {
+      font-family: 'Nanum Gothic', sans-serif;
+      line-height: 1.5;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 10px;
+      border-right: none;
+      border-left: none;
+    }
+    th.info_heading {
+      border-top: 2px dotted black;
+      border-bottom: 2px dotted black;
+      padding: 5px;
+      width: 23vw;;
+      font-weight: 600;
+      text-align: justify;
+      text-align-last: justify;
+      letter-spacing: -0.6em; 
+      word-break: keep-all;
+      
+    }
+    .info_heading:after{
+        content: ":";
+        margin-left: 10px;
+    }
+    td {
+    
+      width: auto;
+
+      border-top: 2px dotted black;
+      border-bottom: 2px dotted black;
+      padding: 10px;
+      font-weight: 800;
+    }
+    #container344{
+
+        font-size:15px;
+    }
+    @media print {
+  @page {
+    size: 80mm;
+  }
+}
+  </style>
+</head>
+<body>
+    <div id="container344">
+  <h1>[자료위치안내]</h1>
+  <table>
+    <tr>
+      <th class="info_heading">서 명</th>
+      <td>${title}</td>
+    </tr>
+    <tr>
+      <th class="info_heading">저 자</th>
+      <td>${authors}</td>
+    </tr>
+    <tr>
+      <th class="info_heading">청 구 기 호</th>
+      <td>${callnumber}</td>
+    </tr>
+    <tr>
+      <th class="info_heading">위 치</th>
+      <td>${location}</td>
+    </tr>
+    <tr>
+      <th class="info_heading">등 록 번 호</th>
+      <td>${bookId}</td>
+    </tr>
+  </table>
+</div>
+</body>
 </html>
   `;
 }
@@ -105,16 +131,19 @@ function generatePrintPage(bookInfo) {
 
 function printContent(content) {
   const printWindow = window.open('', 'PrintWindow', 'width=800,height=600');
-  //printWindow.document.write(decodeURIComponent(content));
   printWindow.document.write(content);
+  // 새로운 창에 인쇄할 도서 정보를 넣는다
   printWindow.print();
- // Clear the print window content on unload
+  //인쇄 창 띄움
   printWindow.document.close();
+ // Clear the print window content on unload.
+ // 출력 클릭할 때마다 도서 정보가 쌓이는 문제가 있었음.
 
   // Close the window after printing
   setTimeout(function() {
     printWindow.close();
   }, 50);
+  // 인쇄가 끝나면 창을 닫는다
 }
 
 modifyPrintButtons();
