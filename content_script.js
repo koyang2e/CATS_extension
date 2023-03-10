@@ -1,4 +1,3 @@
-
 function modifyPrintButtons() {
   const printButtons = document.querySelectorAll('a.btn_print');
   printButtons.forEach(function(printButton) {
@@ -30,6 +29,43 @@ function extractBookInfoFromHref(href) {
   const location = args[4];
   return { title, callnumber, bookId, authors, location };
 }
+
+function library_warn(){
+document.querySelectorAll("a.btn_print").forEach(function(element) {
+  if (!/^javascript:bookPrint\('(.+?\^\|)+\[금곡\].+?'\);/.test(element.getAttribute("href"))) {
+    element.addEventListener("mouseover", function(event) {
+      // Create a tooltip element and add the text
+      var tooltip = document.createElement("div");
+      tooltip.innerText = "Click to print the location";
+
+      // Add a class to the tooltip element
+      tooltip.classList.add("tooltip");
+
+      // Set the z-index property of the tooltip element
+      tooltip.style.zIndex = 9999;
+
+      // Position the tooltip relative to the mouse cursor
+      tooltip.style.position = "absolute";
+      tooltip.style.left = event.pageX + "px";
+      tooltip.style.top = event.pageY + "px";
+
+      // Append the tooltip to the body
+      document.body.appendChild(tooltip);
+
+      // Remove the tooltip when the mouse cursor leaves the element
+      element.addEventListener("mouseout", function(event) {
+        tooltip.remove();
+      });
+    });
+  }
+});
+ 
+}
+
+
+
+
+    
 
 function generatePrintPage(bookInfo) {
   const { title, callnumber, bookId, authors, location } = bookInfo;
@@ -146,4 +182,27 @@ function printContent(content) {
   // 인쇄가 끝나면 창을 닫는다
 }
 
+function modify_lib_selector(){
+//window.addEventListener('load', function() {
+  let manageCodeSelect = document.getElementById('search_managecode');
+  if (manageCodeSelect) {
+    // Set the default value to "BN"
+    manageCodeSelect.value = "BN";
+  }
+//});
+}
+
+
+let whereami = document.getElementById("procMode");
+if (whereami.value == "search"){
 modifyPrintButtons();
+library_warn();
+//console.log("bbb")
+}
+
+else{
+  //console.log("aaaa")
+  modify_lib_selector();
+}
+
+

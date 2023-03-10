@@ -12,8 +12,10 @@
   "content_scripts": [
     {
       "matches": ["*://library.busan.go.kr/ggbooks/*"],
-      "js": ["content.js"]
+      "js": ["content_script.js"],
+      "css": ["content_script.css"]
     }
   ],
-  "manifest_version" : 3
+  "manifest_version" : 3,
+    "options_page": "options.html"
 }
