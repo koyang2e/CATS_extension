@@ -31,12 +31,17 @@ function extractBookInfoFromHref(href) {
 }
 
 function library_warn(){
-document.querySelectorAll("a.btn_print").forEach(function(element) {
-  if (!/^javascript:bookPrint\('(.+?\^\|)+\[금곡\].+?'\);/.test(element.getAttribute("href"))) {
-    element.addEventListener("mouseover", function(event) {
+// function starts here
+
+// Add an event listener to all parent elements of "td.td5" elements
+document.querySelectorAll("td.td5").forEach(function(td5) {
+  var btnPrint = td5.querySelector("a.btn_print");
+
+  if (btnPrint && !/^javascript:bookPrint\('(.+?\^\|)+\[금곡\].+?'\);/.test(btnPrint.getAttribute("href"))) {
+    td5.addEventListener("mouseover", function(event) {
       // Create a tooltip element and add the text
       var tooltip = document.createElement("div");
-      tooltip.innerText = "Click to print the location";
+      tooltip.innerHTML = "<span class='tooltip-icon' style='font-size:25px;'>ℹ️</span><strong>금곡도서관 자료가 아닙니다</strong>";
 
       // Add a class to the tooltip element
       tooltip.classList.add("tooltip");
@@ -44,22 +49,26 @@ document.querySelectorAll("a.btn_print").forEach(function(element) {
       // Set the z-index property of the tooltip element
       tooltip.style.zIndex = 9999;
 
-      // Position the tooltip relative to the mouse cursor
+      // Get the position and dimensions of the "a.btn_print" element
+      var btnPrintRect = btnPrint.getBoundingClientRect();
+
+      // Position the tooltip relative to the "a.btn_print" element
       tooltip.style.position = "absolute";
-      tooltip.style.left = event.pageX + "px";
-      tooltip.style.top = event.pageY + "px";
+      tooltip.style.left = btnPrintRect.right + "px";
+      tooltip.style.top = btnPrintRect.top + window.pageYOffset + "px";
 
       // Append the tooltip to the body
       document.body.appendChild(tooltip);
 
       // Remove the tooltip when the mouse cursor leaves the element
-      element.addEventListener("mouseout", function(event) {
+      td5.addEventListener("mouseout", function(event) {
         tooltip.remove();
       });
     });
   }
 });
- 
+
+//function ends here
 }
 
 
@@ -202,7 +211,7 @@ library_warn();
 
 else{
   //console.log("aaaa")
-  modify_lib_selector();
+//  modify_lib_selector();
 }
 
 
